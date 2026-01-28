@@ -12,6 +12,7 @@ plugins {
 }
 
 kotlin {
+
     androidTarget {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
@@ -21,13 +22,21 @@ kotlin {
     jvm()
 
     js {
-        browser()
+        browser {
+            testTask {
+                enabled = false
+            }
+        }
         binaries.executable()
     }
 
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
-        browser()
+        browser {
+            testTask {
+                enabled = false
+            }
+        }
         binaries.executable()
     }
 
@@ -36,7 +45,6 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.activity.compose)
-
             implementation("io.ktor:ktor-client-okhttp:3.3.0")
         }
 
@@ -47,31 +55,23 @@ kotlin {
             implementation(libs.compose.ui)
             implementation(libs.compose.components.resources)
             implementation(libs.compose.uiToolingPreview)
-
+            implementation(compose.materialIconsExtended)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
-
             implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
-
             implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.1")
-
-            implementation("org.jetbrains.compose.material:material-icons-extended")
-
             implementation("io.insert-koin:koin-core:4.1.1")
             implementation("io.insert-koin:koin-compose:4.1.1")
             implementation("io.insert-koin:koin-compose-viewmodel:4.1.1")
-
             implementation("io.ktor:ktor-client-core:3.3.0")
             implementation("io.ktor:ktor-client-content-negotiation:3.3.0")
             implementation("io.ktor:ktor-serialization-kotlinx-json:3.3.0")
-
             implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
         }
 
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
-
             implementation("io.ktor:ktor-client-okhttp:3.3.0")
         }
 
@@ -124,7 +124,11 @@ compose.desktop {
         mainClass = "dam.aminfelipe.project.MainKt"
 
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            targetFormats(
+                TargetFormat.Dmg,
+                TargetFormat.Msi,
+                TargetFormat.Deb
+            )
             packageName = "dam.aminfelipe.project"
             packageVersion = "1.0.0"
         }
