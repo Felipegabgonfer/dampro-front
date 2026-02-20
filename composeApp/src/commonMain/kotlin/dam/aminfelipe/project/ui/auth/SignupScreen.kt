@@ -50,9 +50,7 @@ fun SignupScreen(
             onValueChange = { dni = it },
             label = { Text("DNI") },
             modifier = Modifier.fillMaxWidth(),
-            singleLine = truemplements AttributeConverter<PuntoGeografico, PGobject> {
-
-
+            singleLine = true
         )
 
         Spacer(modifier = Modifier.height(12.dp))

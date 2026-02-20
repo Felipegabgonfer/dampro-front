@@ -9,9 +9,15 @@ import io.ktor.client.request.setBody
 import io.ktor.client.request.forms.submitForm
 import io.ktor.client.statement.bodyAsText
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.decodeFromString
 import io.ktor.http.ContentType
 import io.ktor.http.Parameters
 import io.ktor.http.contentType
+import dam.aminfelipe.project.infraestructure.auth.dto.UserIdentityDto
+import io.ktor.client.request.get
+import io.ktor.client.request.header
+import io.ktor.client.call.body
+
 
 class RestAuthRepository(
     private val client: HttpClient,
@@ -30,7 +36,7 @@ class RestAuthRepository(
             }
         )
 
-        return Json.decodeFromString(response.bodyAsText())
+    return Json.decodeFromString<LoginResponseDto>(response.bodyAsText())
     }
 
     override suspend fun signup(signupDto: SignupDto) {
@@ -40,5 +46,14 @@ class RestAuthRepository(
             contentType(ContentType.Application.Json)
             setBody(signupDto)
         }
+    }
+
+    override suspend fun me(token: String): UserIdentityDto {
+        val url = "${baseUrl.trimEnd('/')}/users/me/"
+        val response = client.get(url) {
+            header("Authorization", "Bearer $token")
+        }
+
+    return Json.decodeFromString<UserIdentityDto>(response.bodyAsText())
     }
 }

@@ -4,10 +4,11 @@ import dam.aminfelipe.project.ui.auth.AuthViewModel
 import org.koin.dsl.module
 
 val presentationModule = module {
-    factory {
+    single {
         AuthViewModel(
             loginUseCase = get(),
-            signupUseCase = get()
+            signupUseCase = get(),
+            getIdentityUseCase = get()
         )
     }
 }

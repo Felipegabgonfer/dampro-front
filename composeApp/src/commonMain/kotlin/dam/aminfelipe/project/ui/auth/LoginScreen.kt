@@ -18,8 +18,15 @@ fun LoginScreen(
     var password by remember { mutableStateOf("") }
     val scope = rememberCoroutineScope()
 
-    if (viewModel.token != null) {
+    if (viewModel.isAuthenticated) {
         onLoginSuccess()
+    }
+
+    if (viewModel.isLoading) {
+        Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
+            CircularProgressIndicator(modifier = Modifier.wrapContentWidth())
+        }
+        return
     }
 
     Column(

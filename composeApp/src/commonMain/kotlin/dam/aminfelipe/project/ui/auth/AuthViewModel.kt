@@ -3,17 +3,26 @@ package dam.aminfelipe.project.ui.auth
 import androidx.compose.runtime.*
 import dam.aminfelipe.project.application.auth.LoginUseCase
 import dam.aminfelipe.project.application.auth.SignupUseCase
+import dam.aminfelipe.project.application.auth.GetIdentityUseCase
+import dam.aminfelipe.project.infraestructure.auth.dto.UserIdentityDto
 import io.ktor.client.plugins.*
 
 class AuthViewModel(
     private val loginUseCase: LoginUseCase,
-    private val signupUseCase: SignupUseCase
+    private val signupUseCase: SignupUseCase,
+    private val getIdentityUseCase: GetIdentityUseCase
 ) {
 
     var isLoading by mutableStateOf(false)
         private set
 
     var token by mutableStateOf<String?>(null)
+        private set
+
+    var identity by mutableStateOf<UserIdentityDto?>(null)
+        private set
+
+    var isAuthenticated by mutableStateOf(false)
         private set
 
     var signupSuccess by mutableStateOf(false)
@@ -29,6 +38,14 @@ class AuthViewModel(
         try {
             val result = loginUseCase(user, password)
             token = result.accessToken
+            try {
+                val id = getIdentityUseCase(result.accessToken)
+                identity = id
+                isAuthenticated = true
+            } catch (e: Exception) {
+                error = e.message ?: "Error al obtener la identidad"
+                isAuthenticated = false
+            }
         } catch (e: ResponseException) {
             val status = e.response.status.value
             error = when (status) {
